@@ -15,7 +15,8 @@ public class DBService {
 
     public void instanciaDB() {
         Usuario u1 = new Usuario(null, "Valdir Cezar", "488.484.130-13", "valdir@mail.com", "123");
+        Usuario u2 = new Usuario(null, "João Pedro", "227.235.780-62", "joao@mail.com", "123");
 
-        usuarioRepository.saveAll(Arrays.asList(u1));
+        usuarioRepository.saveAll(Arrays.asList(u1, u2));
     }
 }
