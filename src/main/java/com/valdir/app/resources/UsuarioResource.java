@@ -1,5 +1,6 @@
 package com.valdir.app.resources;
 
+import com.valdir.app.configurations.ModelMapperConfig;
 import com.valdir.app.models.Usuario;
 import com.valdir.app.models.dtos.UsuarioDTO;
 import com.valdir.app.services.UsuarioService;
@@ -17,9 +18,12 @@ public class UsuarioResource {
     @Autowired
     private UsuarioService service;
 
+    @Autowired
+    private ModelMapperConfig modelMapper;
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioDTO> findByOd(@PathVariable Integer id) {
         Usuario usuario = service.findById(id);
-        return ResponseEntity.ok().body(new UsuarioDTO(usuario));
+        return ResponseEntity.ok().body(modelMapper.modelMapper().map(usuario, UsuarioDTO.class));
     }
 }
