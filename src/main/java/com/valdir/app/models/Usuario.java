@@ -3,7 +3,6 @@ package com.valdir.app.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +20,6 @@ public class Usuario implements Serializable {
     private String nome;
 
     @Column(unique = true)
-    @CPF
     private String cpf;
 
     @Column(unique = true)
