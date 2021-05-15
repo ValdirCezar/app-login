@@ -3,6 +3,7 @@ package com.valdir.app.resources.services;
 import com.valdir.app.models.Usuario;
 import com.valdir.app.repositories.UsuarioRepository;
 import com.valdir.app.services.UsuarioService;
+import com.valdir.app.services.exceptions.ObjectNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -49,6 +50,17 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(response.getEmail(), usuario.getEmail());
         Assertions.assertEquals(response.getSenha(), usuario.getSenha());
         Assertions.assertNotNull(response);
+    }
+
+    @Test
+    public void deveRetornarErroTest() {
+        try {
+            Mockito.when(usuarioService.findById(Mockito.anyInt()))
+                    .thenThrow(new ObjectNotFoundException(
+                            "Objeto não encontrado! Id: " + ID + ", Tipo: " + Usuario.class.getSimpleName()));
+        } catch (ObjectNotFoundException ex) {
+            Assertions.assertEquals(ex.getMessage(), "Objeto não encontrado! Id: " + 0 + ", Tipo: " + Usuario.class.getSimpleName());
+        }
     }
 
 }
