@@ -1,8 +1,7 @@
-package com.valdir.app.resources.services;
+package com.valdir.app.services;
 
 import com.valdir.app.models.Usuario;
 import com.valdir.app.repositories.UsuarioRepository;
-import com.valdir.app.services.UsuarioService;
 import com.valdir.app.services.exceptions.ObjectNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +12,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class UsuarioServiceTest {
 
     private static final Integer ID = 1;
@@ -39,9 +42,8 @@ public class UsuarioServiceTest {
     @Test
     public void deveRetornarUsuarioTest() {
         Usuario usuario = new Usuario(ID, NOME, CPF, EMAIL, SENHA);
-        Optional<Usuario> optional = Optional.of(usuario);
 
-        Mockito.when(usuarioRepository.findById(Mockito.anyInt())).thenReturn(optional);
+        Mockito.when(usuarioRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(usuario));
         Usuario response = usuarioService.findById(ID);
 
         Assertions.assertEquals(response.getId(), ID);
@@ -61,6 +63,18 @@ public class UsuarioServiceTest {
         } catch (ObjectNotFoundException ex) {
             Assertions.assertEquals(ex.getMessage(), "Objeto não encontrado! Id: " + 0 + ", Tipo: " + Usuario.class.getSimpleName());
         }
+    }
+
+    @Test
+    public void deveRetornarListaDeUsuarioTest() {
+        List<Usuario> list = Collections.singletonList(new Usuario(ID, NOME, CPF, EMAIL, SENHA));
+        Mockito.when(usuarioRepository.findAll()).thenReturn(list);
+
+        List<Usuario> response = usuarioService.findAll();
+        Assertions.assertEquals(response.get(0).getNome(), list.get(0).getNome());
+        Assertions.assertEquals(response.get(0).getCpf(), list.get(0).getCpf());
+        Assertions.assertEquals(response.get(0).getEmail(), list.get(0).getEmail());
+        Assertions.assertEquals(response.get(0).getSenha(), list.get(0).getSenha());
     }
 
 }
