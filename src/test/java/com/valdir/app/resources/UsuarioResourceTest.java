@@ -84,6 +84,13 @@ public class UsuarioResourceTest {
         Assertions.assertEquals(usuario.getSenha(), response.getBody().getSenha());
     }
 
+    @Test
+    public void deveRetornarStatus204_QuandoChamarDeleteTest() {
+        Mockito.doNothing().when(usuarioService).delete(Mockito.any());
+        ResponseEntity<Void> response = usuarioResource.delete(ID);
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
 }
 
 
