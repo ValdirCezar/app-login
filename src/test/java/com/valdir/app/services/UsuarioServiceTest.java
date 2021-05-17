@@ -79,8 +79,10 @@ public class UsuarioServiceTest {
 
     @Test
     public void deveRetornarUsuario_QuandoUpdateForChamadoTest() {
+        Mockito.when(usuarioRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(usuario));
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
-        Usuario response = usuarioService.update(ID, usuario);
+
+        Usuario response = usuarioService.update(1, usuario);
         Assertions.assertEquals(usuario.toString(), response.toString());
     }
 
