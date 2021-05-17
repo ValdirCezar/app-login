@@ -64,7 +64,18 @@ public class UsuarioResource {
     	Usuario newObj = service.update(id, obj);
     	return ResponseEntity.ok().body(new UsuarioDTO(newObj));
     }
-    
+
+    /**
+     * Deleta um Usuario por id
+      * @param id do Usuario a ser deletado
+     * @return noContent
+     */
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
 
 
