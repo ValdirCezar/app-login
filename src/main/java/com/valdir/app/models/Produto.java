@@ -1,5 +1,6 @@
 package com.valdir.app.models;
 
+import com.valdir.app.models.dtos.ProdutoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,11 @@ public class Produto {
     @NotNull(message = "Campo NOME é requerido")
     private String nome;
     private String descricao;
+
+    public Produto(ProdutoDTO obj) {
+        this.id = obj.getId();
+        this.nome = obj.getNome();
+        this.descricao = obj.getDescricao();
+    }
+
 }
