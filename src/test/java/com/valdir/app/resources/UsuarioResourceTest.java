@@ -1,6 +1,7 @@
 package com.valdir.app.resources;
 
 import com.valdir.app.models.Usuario;
+import com.valdir.app.models.dtos.UsuarioDTO;
 import com.valdir.app.services.UsuarioService;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UsuarioResourceTest {
@@ -21,6 +26,7 @@ public class UsuarioResourceTest {
     private static final String CPF = "488.484.130-13";
     private static final String EMAIL = "email@mail.com";
     private static final String SENHA = "123";
+    private Usuario usuario;
 
     @InjectMocks
     private UsuarioResource usuarioResource;
@@ -31,20 +37,40 @@ public class UsuarioResourceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        usuario = new Usuario(ID, NOME, CPF, EMAIL, SENHA);
     }
 
     @Test
     public void deveRetornarUsuarioDTO_QuandoChamarFindByIdTest() {
-        Usuario usuario = new Usuario(ID, NOME, CPF, EMAIL, SENHA);
-
         Mockito.when(usuarioService.findById(Mockito.anyInt())).thenReturn(usuario);
-        var response = usuarioResource.findById(ID);
+        ResponseEntity<UsuarioDTO> response = usuarioResource.findById(ID);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(response.getBody().getId(), usuario.getId());
         Assertions.assertEquals(response.getBody().getCpf(), usuario.getCpf());
         Assertions.assertNotNull(response);
     }
+
+    @Test
+    public void deveRetornarListaDeUsuarioDTO_QuandoChamarFindAllTest() {
+        List<Usuario> list = Collections.singletonList(usuario);
+
+        Mockito.when(usuarioService.findAll()).thenReturn(list);
+        ResponseEntity<List<UsuarioDTO>> response = usuarioResource.findAll();
+
+        Assertions.assertEquals(list.get(0).getId(), response.getBody().get(0).getId());
+        Assertions.assertEquals(UsuarioDTO.class.getSimpleName(), response.getBody().get(0).getClass().getSimpleName());
+        Assertions.assertEquals(list.size(), response.getBody().size());
+        Assertions.assertEquals(list.stream().count(), response.getBody().stream().count());
+    }
+
+    @Test
+    public void deveRetornarStatus201_QuandoChamarCreateTest() {
+        Mockito.when(usuarioService.create(Mockito.any())).thenReturn(usuario);
+        ResponseEntity<UsuarioDTO> response = usuarioResource.create(usuario);
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
 }
 
 
