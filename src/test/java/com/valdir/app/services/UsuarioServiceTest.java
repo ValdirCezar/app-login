@@ -27,6 +27,7 @@ public class UsuarioServiceTest {
     private static final String CPF = "488.484.130-13";
     private static final String EMAIL = "email@mail.com";
     private static final String SENHA = "123";
+    private Usuario usuario;
 
     @InjectMocks
     private UsuarioService usuarioService;
@@ -37,25 +38,20 @@ public class UsuarioServiceTest {
     @Before
     public void init() {
         MockitoAnnotations.openMocks(this);
+        usuario = new Usuario(ID, NOME, CPF, EMAIL, SENHA);
     }
 
     @Test
-    public void deveRetornarUsuarioTest() {
-        Usuario usuario = new Usuario(ID, NOME, CPF, EMAIL, SENHA);
-
+    public void deveRetornarUsuario_QuandoChamarFindByIdComIdValidoTest() {
         Mockito.when(usuarioRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(usuario));
         Usuario response = usuarioService.findById(ID);
 
-        Assertions.assertEquals(response.getId(), ID);
-        Assertions.assertEquals(response.getNome(), usuario.getNome());
-        Assertions.assertEquals(response.getCpf(), usuario.getCpf());
-        Assertions.assertEquals(response.getEmail(), usuario.getEmail());
-        Assertions.assertEquals(response.getSenha(), usuario.getSenha());
+        Assertions.assertEquals(usuario.toString(), response.toString());
         Assertions.assertNotNull(response);
     }
 
     @Test
-    public void deveRetornarErroTest() {
+    public void deveRetornarErro_QuandoChamarFindByIdComIdInvalidoTest() {
         try {
             Mockito.when(usuarioService.findById(Mockito.anyInt()))
                     .thenThrow(new ObjectNotFoundException(
@@ -66,15 +62,20 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveRetornarListaDeUsuarioTest() {
-        List<Usuario> list = Collections.singletonList(new Usuario(ID, NOME, CPF, EMAIL, SENHA));
+    public void deveRetornarListaDeUsuario_QuandoChamarFindAllTest() {
+        List<Usuario> list = Collections.singletonList(usuario);
         Mockito.when(usuarioRepository.findAll()).thenReturn(list);
 
         List<Usuario> response = usuarioService.findAll();
-        Assertions.assertEquals(response.get(0).getNome(), list.get(0).getNome());
-        Assertions.assertEquals(response.get(0).getCpf(), list.get(0).getCpf());
-        Assertions.assertEquals(response.get(0).getEmail(), list.get(0).getEmail());
-        Assertions.assertEquals(response.get(0).getSenha(), list.get(0).getSenha());
+        Assertions.assertEquals(response.get(0).toString(), list.get(0).toString());
     }
+
+    @Test
+    public void deveRetornarUsuario_QuandoCreateForChamadoTest() {
+        Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
+        Usuario response = usuarioService.create(usuario);
+        Assertions.assertEquals(usuario.toString(), response.toString());
+    }
+
 
 }

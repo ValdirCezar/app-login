@@ -71,6 +71,19 @@ public class UsuarioResourceTest {
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
+    @Test
+    public void deveRetornarStatus200_QuandoChamarUpdateTest() {
+        Mockito.when(usuarioService.update(Mockito.any(), Mockito.any())).thenReturn(usuario);
+
+        ResponseEntity<UsuarioDTO> response = usuarioResource.update(ID, usuario);
+
+        Assertions.assertEquals(UsuarioDTO.class, response.getBody().getClass());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(usuario.getId(), response.getBody().getId());
+        Assertions.assertEquals(usuario.getCpf(), response.getBody().getCpf());
+        Assertions.assertEquals(usuario.getSenha(), response.getBody().getSenha());
+    }
+
 }
 
 
