@@ -2,6 +2,7 @@ package com.valdir.app.services;
 
 import com.valdir.app.models.Produto;
 import com.valdir.app.models.Usuario;
+import com.valdir.app.models.enums.Perfil;
 import com.valdir.app.repositories.ProdutoRepository;
 import com.valdir.app.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class DBService {
 
     public void instanciaDB() {
         Usuario u1 = new Usuario(null, "Valdir Cezar", "488.484.130-13", "valdir@mail.com", "123");
+        u1.addPerfil(Perfil.ADMIN);
+
         Usuario u2 = new Usuario(null, "João Pedro", "227.235.780-62", "joao@mail.com", "123");
 
         Produto p1 = new Produto(null, "SmarTV", "SmarTV OLED");
