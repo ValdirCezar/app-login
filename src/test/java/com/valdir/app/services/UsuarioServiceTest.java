@@ -77,5 +77,11 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(usuario.toString(), response.toString());
     }
 
+    @Test
+    public void deveRetornarUsuario_QuandoUpdateForChamadoTest() {
+        Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
+        Usuario response = usuarioService.update(ID, usuario);
+        Assertions.assertEquals(usuario.toString(), response.toString());
+    }
 
 }
