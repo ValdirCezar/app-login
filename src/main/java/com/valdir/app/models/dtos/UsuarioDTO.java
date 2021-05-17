@@ -1,15 +1,18 @@
 package com.valdir.app.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.valdir.app.models.Usuario;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioDTO implements Serializable {
@@ -27,6 +30,7 @@ public class UsuarioDTO implements Serializable {
     @NotNull(message = "Campo E-MAIL é requerido")
     private String email;
 
+    @JsonIgnore
     @NotNull(message = "Campo SENHA é requerido")
     private String senha;
 
@@ -38,6 +42,9 @@ public class UsuarioDTO implements Serializable {
         this.senha = obj.getSenha();
     }
 
+    public String getSenha() {
+        return senha;
+    }
 }
 
 

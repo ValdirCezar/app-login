@@ -44,13 +44,13 @@ public class UsuarioResource {
 
     /**
      * Cria um novo Usuario
-     * @param objDTO
+     * @param obj
      * @return URI
      * @return UsuarioDTO
      */
     @PostMapping
-    public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioDTO objDTO) {
-        Usuario usuario = service.create(objDTO);
+    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody Usuario obj) {
+        Usuario usuario = service.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));
     }
@@ -58,12 +58,12 @@ public class UsuarioResource {
     /**
      * Atualiza um Usuario
      * @param id
-     * @param usuarioDTO
+     * @param obj
      * @return usuarioDTO
      */
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @Valid @RequestBody UsuarioDTO usuarioDTO) {
-    	Usuario newObj = service.update(id, usuarioDTO);
+    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @Valid @RequestBody Usuario obj) {
+    	Usuario newObj = service.update(id, obj);
     	return ResponseEntity.ok().body(new UsuarioDTO(newObj));
     }
     
