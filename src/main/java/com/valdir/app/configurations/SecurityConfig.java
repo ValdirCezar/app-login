@@ -1,14 +1,18 @@
 package com.valdir.app.configurations;
 
+import com.valdir.app.security.JWTAuthenticationFilter;
+import com.valdir.app.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -28,9 +32,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment environment;
 
-    private static final String[] PUBLIC_MATCHERS = {"/h2-console/**", "/usuarios/**"};
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    private static final String[] PUBLIC_MATCHERS = {"/h2-console/**"};
     private static final String[] PUBLIC_MATCHERS_GET = {"/produtos/**"};
 
+    /**
+     * Qualquer endpoint que requeira defesa
+     * contra vulnerabilidades comuns pode ser
+     * especificado aqui, incluindo as públicas.
+     * @param http
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -44,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Habilita as configurações de cors e desabilita a proteção csrf
         http.cors().and().csrf().disable();
+        http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
         http.authorizeRequests()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
@@ -51,6 +69,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Assegurando que não será criada sessão de usuário
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    /**
+     * Como será usada a autenticação do framework
+     * esse metodo deve ser sobrescrito para informarmos
+     * quem será o UserDetailsService que estamos usando
+     * e quem é o algoritmo de codificação que no caso é
+     * o BCryptPasswordEncoder. Usado pela implementação
+     * padrão de authenticationManager()para tentar obter
+     * um AuthenticationManager
+     * @param auth
+     * @throws Exception
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // A partir do auth eu digo quem é o UserDetailsService
+        auth.userDetailsService(userDetailsService)
+                // E digo quem é meu algoritmo de encriptação
+                .passwordEncoder(bCryptPasswordEncoder());
     }
 
     /**
