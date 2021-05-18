@@ -5,6 +5,7 @@ import com.valdir.app.repositories.UsuarioRepository;
 import com.valdir.app.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -16,6 +17,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository repository;
+
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
     private ModelMapper mapper = new ModelMapper();
 
@@ -32,6 +36,7 @@ public class UsuarioService {
 
     public Usuario create(Usuario obj) {
         obj.setId(null);
+        obj.setSenha(encoder.encode(obj.getSenha()));
         return repository.save(obj);
     }
 
