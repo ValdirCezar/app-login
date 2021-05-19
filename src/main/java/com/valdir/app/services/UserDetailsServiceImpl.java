@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Interface central que carrega dados específicos do usuário
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

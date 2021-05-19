@@ -1,6 +1,7 @@
 package com.valdir.app.configurations;
 
 import com.valdir.app.security.JWTAuthenticationFilter;
+import com.valdir.app.security.JWTAuthorizationFilter;
 import com.valdir.app.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Habilita as configurações de cors e desabilita a proteção csrf
         http.cors().and().csrf().disable();
+        // Registrando o filtro de authenticação JWT
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
         http.authorizeRequests()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()

@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 /**
  * Essa classe serve para fornecer informações básicas do usuário
+ * As implementações não são usadas diretamente pelo Spring Security
+ * para fins de segurança. Eles simplesmente armazenam informações
+ * do usuário que são posteriormente encapsuladas em Authentication
  */
 public class UserSS implements UserDetails {
 

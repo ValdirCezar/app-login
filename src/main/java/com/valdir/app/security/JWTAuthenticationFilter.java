@@ -25,6 +25,15 @@ import java.util.Date;
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    /**
+     * AuthenticationManager é a principal interface de
+     * estratégia para autenticação.
+     * Se o principal da autenticação de entrada for válido e verificado,
+     * o metodo authenticate retorna uma instância de Authentication com
+     * o sinalizador de autenticado definido como verdadeiro. Do contrário,
+     * se o principal não for válido, ele lançará uma AuthenticationException.
+     * Para o último caso, ele retorna nulo se não puder decidir.
+     */
     private AuthenticationManager authenticationManager;
 
     private JWTUtil jwtUtil;
@@ -55,15 +64,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
          * de forma automática
          */
         try {
-            // Vamos pegar os valores da requisição e tentar converter para um objeto do tipo CredenciaisDTO
+            /* getInputStream() Recupera o corpo da solicitação como dados
+               binários usando um ServletInputStream. Este método ou getReader
+               pode ser chamado para ler o corpo */
             CredenciaisDTO creds = new ObjectMapper().readValue(request.getInputStream(), CredenciaisDTO.class);
 
-            // Criando esse objeto para passar para o metodo autenticate do authenticationManager
-            // verificar se o usuario e senha passados na requisição são válidos
+            /* Criando esse objeto para passar para o metodo autenticate do authenticationManager
+               verificar se o usuario e senha passados na requisição são válidos */
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(creds.getEmail(), creds.getSenha(), new ArrayList<>());
 
-            // Esse é o metodo que verifica se o usuario e senha passados são válidos
+            /* Esse é o metodo que verifica se o usuario e senha passados são válidos */
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             return authentication;
         } catch (IOException e) {
