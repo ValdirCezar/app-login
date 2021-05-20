@@ -1,7 +1,10 @@
 package com.valdir.app.services;
 
 import com.valdir.app.models.Usuario;
+import com.valdir.app.models.enums.Perfil;
 import com.valdir.app.repositories.UsuarioRepository;
+import com.valdir.app.security.UserSS;
+import com.valdir.app.services.exceptions.AuthorizationException;
 import com.valdir.app.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,11 @@ public class UsuarioService {
     private ModelMapper mapper = new ModelMapper();
 
     public Usuario findById(Integer id) {
+        UserSS userSS = UserService.authenticated();
+        if((userSS == null || !userSS.hasRole(Perfil.ADMIN)) && !id.equals(userSS.getId())) {
+            throw new AuthorizationException("Acesso negado!");
+        }
+
         Optional<Usuario> obj = repository.findById(id);
         return obj.orElseThrow(() ->
                 new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Usuario.class.getSimpleName())

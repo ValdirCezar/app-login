@@ -1,5 +1,6 @@
 package com.valdir.app.resources.exceptions;
 
+import com.valdir.app.services.exceptions.AuthorizationException;
 import com.valdir.app.services.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,11 @@ public class ResourceExceptionHandler {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<StandardError> objectnotFound(AuthorizationException ex) {
+        StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), System.currentTimeMillis(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 }
